@@ -1,16 +1,23 @@
 "use client";
 import { useState } from "react";
+import { addTask } from "@/app/api/add/route";
+import { NextRequest } from "next/server";
 
 export default function Home() {
   const [tasks, setTasks] = useState<string[]>([]);
   const [text, setText] = useState<string>("");
 
+  const request = new NextRequest("http:/localhost:3000/api/add", {
+    method: "POST",
+    body: JSON.stringify({ text: text }),
+  });
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setTasks([...tasks, text]);
-    setText("");
+    // setTasks([...tasks, text]);
+    // setText("");
+    addTask(request);
   }
-
   function handleDelete(indexToDelete: number) {
     setTasks(tasks.filter((_, index) => index !== indexToDelete));
   }
@@ -31,7 +38,7 @@ export default function Home() {
           {tasks.map((task, index) => (
             <li key={index}>
               {task}
-              <button onClick={() => handleDelete(index)}>Delete</button>
+              <button>Delete</button>
             </li>
           ))}
         </ul>
